@@ -6,11 +6,9 @@ import _ from "lodash";
 const initialState = categories.result.map((category) => {
   return {
     ...category,
-    selected: false,
     advertisers: category.advertisers.map((advertiser) => {
       return {
         ...advertiser,
-        selected: false,
         area: advertiser.area.map((ar) => {
           return {
             ...ar,
@@ -59,11 +57,12 @@ export default function Checkboxes() {
               if (advertiser.city_id === city_id) {
                 return {
                   ...advertiser,
-                  selected: !advertiser.selected,
                   area: advertiser.area.map((ar) => {
                     return {
                       ...ar,
-                      selected: !advertiser.selected,
+                      selected: advertiser.area.some((ar) => ar.selected)
+                        ? false
+                        : true,
                     };
                   }),
                 };
@@ -77,15 +76,17 @@ export default function Checkboxes() {
         if (category.id === category_id) {
           return {
             ...category,
-            selected: !category.selected,
             advertisers: category.advertisers.map((advertiser) => {
               return {
                 ...advertiser,
-                selected: !category.selected,
                 area: advertiser.area.map((ar) => {
                   return {
                     ...ar,
-                    selected: !category.selected,
+                    selected: category.advertisers.some((advertiser) =>
+                      advertiser.area.some((ar) => ar.selected)
+                    )
+                      ? false
+                      : true,
                   };
                 }),
               };
